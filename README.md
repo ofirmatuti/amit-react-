@@ -1,5 +1,7 @@
 # 📰 Posts Explorer
 
+![CI](https://github.com/amitha51111/react-app/actions/workflows/ci.yml/badge.svg)
+
 A responsive React application that fetches data from the public
 [JSONPlaceholder](https://jsonplaceholder.typicode.com) API. It lists posts,
 lets you search them, view a post's details along with its comments, and add a
@@ -41,6 +43,68 @@ The app opens automatically at **http://localhost:5173**.
 npm run build     # Production build into /dist
 npm run preview   # Preview the production build locally
 ```
+
+---
+
+## 🧪 Testing
+
+Tests use [Vitest](https://vitest.dev) + [React Testing Library](https://testing-library.com/react)
+and live in the top-level [`test/`](test) folder.
+
+```bash
+make test          # run all tests once
+make test-watch    # re-run tests as files change
+# (equivalent to: npm run test:run / npm test)
+```
+
+---
+
+## 🐳 Running with Docker
+
+The app ships with a **multi-stage** [`Dockerfile`](Dockerfile): it builds the
+static bundle with Node, then serves it with **nginx**. The nginx config
+([`nginx.conf`](nginx.conf)) includes an SPA fallback so client-side routes like
+`/posts/1` still work on refresh.
+
+```bash
+# Build the image
+make docker-build          # or: docker build -t jsonplaceholder-posts-app .
+
+# Run the container (maps http://localhost:8080 -> nginx port 80)
+make docker-run            # or: docker run --rm -p 8080:80 jsonplaceholder-posts-app
+```
+
+Then open **http://localhost:8080**.
+
+To use a different host port:
+```bash
+make docker-run PORT=3000  # http://localhost:3000
+```
+
+---
+
+## 🔄 CI/CD (GitHub Actions)
+
+The workflow at [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on
+pushes and pull requests to `main`:
+
+1. **Test** — installs deps with `npm ci` and runs `npm run test:run`.
+2. **Build & Push** — *(only on pushes to `main`, after tests pass)* builds the
+   Docker image and pushes it to Docker Hub as
+   [`amitha51111/react-app`](https://hub.docker.com/r/amitha51111/react-app)
+   with `latest` and a short-SHA tag. Build cache is stored via GitHub Actions
+   cache for faster subsequent builds.
+
+### Required repository secrets
+Add these under **GitHub → Settings → Secrets and variables → Actions**:
+
+| Secret | Value |
+| ------ | ----- |
+| `DOCKERHUB_USERNAME` | `amitha51111` |
+| `DOCKERHUB_TOKEN`    | A Docker Hub **access token** (Account Settings → Security → New Access Token) with Read/Write scope |
+
+> Pull requests run **only** the test job — they never publish an image, so
+> forks/PRs can't push to your Docker Hub.
 
 ---
 

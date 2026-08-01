@@ -5,7 +5,6 @@ import { usePosts } from '../context/PostsContext';
 
 export function usePost(id) {
   const { posts } = usePosts();
-  console.log(posts)
   const localPost = posts.find((p) => String(p.id) === String(id));
 
   const [post, setPost] = useState(localPost ?? null);
