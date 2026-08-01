@@ -45,6 +45,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # QEMU lets the amd64 runner also build arm64 images (multi-arch).
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -68,6 +72,9 @@ jobs:
         with:
           context: .
           push: true
+          # Build for both Intel/AMD and ARM so the image pulls natively
+          # on Apple Silicon and x86 without --platform / emulation.
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
