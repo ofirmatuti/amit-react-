@@ -13,4 +13,4 @@ RUN npm run build
 
 # vite preview serves /app/dist on port 4173.
 EXPOSE 4173
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "4173"]
