@@ -3,9 +3,9 @@ name: CI
 # Run on pushes and PRs to main, and allow manual runs from the Actions tab.
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
   workflow_dispatch:
 
 # Image is published to Docker Hub as amitha51111/react-app.
@@ -34,13 +34,13 @@ jobs:
         run: npm run test:run
 
   # ---- Stage 2: Build the Docker image and push it to Docker Hub ----
-  # Only runs after tests pass, and only on pushes to main (not on PRs),
-  # so pull requests never publish an image.
+  # Only runs after tests pass, and only on pushes to the default branch
+  # (main or master, not on PRs), so pull requests never publish an image.
   build-and-push:
     name: Build & Push Image
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

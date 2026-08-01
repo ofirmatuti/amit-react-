@@ -1,6 +1,6 @@
 # 📰 Posts Explorer
 
-![CI](https://github.com/amitha51111/react-app/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/ofirmatuti/amit-react-/actions/workflows/ci.yml/badge.svg)
 
 A responsive React application that fetches data from the public
 [JSONPlaceholder](https://jsonplaceholder.typicode.com) API. It lists posts,
